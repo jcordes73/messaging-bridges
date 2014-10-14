@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/blueprint"  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0" xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+  <cm:property-placeholder id="amq.camel.jms.bridge.placeholder" persistent-id="com.redhat.amq.camel.jms.bridge"/>
+
+  <reference id="platformTxManager" interface="org.springframework.transaction.PlatformTransactionManager" availability="mandatory"/>
+  <reference id="transactionManager" interface="javax.transaction.TransactionManager" availability="mandatory"/>
+  <reference id="recoverableTxManager" interface="org.apache.geronimo.transaction.manager.RecoverableTransactionManager" availability="mandatory"/>
+
+  <bean id="required" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
+    <property name="transactionManager" ref="platformTxManager"/>
+  </bean>
+
+  <bean id="policy" class="org.apache.activemq.RedeliveryPolicy">
+    <property name="maximumRedeliveries" value="-1"/>
+  </bean>
+
+  <bean id="initialContextFactory" class="javax.naming.InitialContext">
+    <argument>
+      <props>
+        <prop key="java.naming.factory.initial">org.jboss.naming.remote.client.InitialContextFactory</prop>
+        <prop key="java.naming.provider.url">${jboss.java.naming.provider.url}</prop>
+        <prop key="java.naming.security.principal">${jboss.java.naming.security.principal}</prop>
+        <prop key="java.naming.security.credentials">${jboss.java.naming.security.credentials}</prop>
+        <prop key="jboss.naming.client.remote.connectionprovider.create.options.org.xnio.Options.SSL_ENABLED">true</prop>
+        <prop key="jboss.naming.client.connect.options.org.xnio.Options.SSL_STARTTLS">true</prop>
+      </props>
+     </argument>
+  </bean>
+
+  <bean id="hornetqJmsConnectionFactory" factory-ref="initialContextFactory" factory-method="lookup" >
+    <argument value="jms/RemoteConnectionFactory" />
+  </bean>
+
+  <bean id="hornetqJmsXAConnectionFactory" factory-ref="initialContextFactory" factory-method="lookup" >
+    <argument value="jms/RemoteXAConnectionFactory" />
+  </bean>
+
+  <bean id="hornetq" class="org.apache.camel.component.jms.JmsComponent">
+    <property name="connectionFactory" ref="hornetqJmsConnectionFactory"/>
+    <property name="transactionManager" ref="platformTxManager"/>
+  </bean>
+
+  <bean id="hornetqxa" class="org.apache.camel.component.jms.JmsComponent">
+    <property name="connectionFactory" ref="hornetqJmsXAConnectionFactory"/>
+    <property name="transactionManager" ref="platformTxManager"/>
+  </bean>
+
+  <bean id="amqJmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    <property name="brokerURL" value="vm://brokerA?create=false"/>
+    <property name="userName" value="${amq.camel.jms.bridge.user}"/>
+    <property name="password" value="${amq.camel.jms.bridge.password}"/>
+  </bean>
+
+  <bean id="amqJmsXAConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
+    <property name="brokerURL" value="vm://brokerA?create=false"/>
+    <property name="userName" value="${amq.camel.jms.bridge.user}"/>
+    <property name="password" value="${amq.camel.jms.bridge.password}"/>
+    <property name="redeliveryPolicy" ref="policy"/>
+  </bean>
+
+  <bean id="amqXAPooledConnectionFactory" class="org.apache.activemq.pool.JcaPooledConnectionFactory" init-method="start" destroy-method="stop">
+    <property name="name" value="camelxa"/>
+    <property name="maxConnections" value="1"/>
+    <property name="connectionFactory" ref="amqJmsXAConnectionFactory"/>
+    <property name="transactionManager" ref="transactionManager"/>
+  </bean>
+
+  <bean id="activemqxa" class="org.apache.activemq.camel.component.ActiveMQComponent">
+    <property name="connectionFactory" ref="amqXAPooledConnectionFactory"/>
+    <property name="transactionManager" ref="platformTxManager"/>
+  </bean>
+
+  <bean id="resourceManager-AMQ" class="org.apache.activemq.pool.ActiveMQResourceManager" init-method="recoverResource">
+    <property name="transactionManager" ref="recoverableTxManager"/>
+    <property name="connectionFactory" ref="amqJmsXAConnectionFactory"/>
+    <property name="userName" value="${amq.camel.jms.bridge.user}" />
+    <property name="password" value="${amq.camel.jms.bridge.password}" />
+    <property name="resourceName" value="camelxa"/>
+  </bean>
+
+  <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+   <route id="activemq-hornetq">
+     <from uri="activemqxa:queue:queueA"/>
+     <transacted/>
+     <to uri="hornetqxa:queue:queueB?username={{jboss.hornetq.user}}&amp;password={{jboss.hornetq.password}}"/>
+   </route>
+
+    <route id="hornetq-activemq">
+     <from uri="hornetqxa:queue:queueB?username={{jboss.hornetq.user}}&amp;password={{jboss.hornetq.password}}"/>
+     <transacted/>
+     <to uri="activemqxa:queue:queueC"/>
+    </route>
+  </camelContext>
+</blueprint>

@@ -1,0 +1,12 @@
+if (outcome == success) of :read-resource()
+  /subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar":remove()
+end-if
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar":add(archive="activemq-rar-5.9.0.redhat-610379.rar",transaction-support="XATransaction")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/config-properties="Password":add(value="${activemq.password}")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/config-properties="UserName":add(value="${activemq.user}")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/config-properties="ServerUrl":add(value="${activemq.serverUrl}")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/admin-objects="queueA":add(class-name="org.apache.activemq.command.ActiveMQQueue",jndi-name="java:/queue/queueA",use-java-context="true")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/admin-objects="queueA"/config-properties="PhysicalName":add(value="queueA")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/admin-objects="topicA":add(class-name="org.apache.activemq.command.ActiveMQTopic",jndi-name="java:/topic/topicA",use-java-context="true")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/admin-objects="topicA"/config-properties="PhysicalName":add(value="topicA")
+/subsystem="resource-adapters"/resource-adapter="activemq-rar-5.9.0.redhat-610379.rar"/connection-definitions="ActiveMQConnectionFactoryPool":add(class-name="org.apache.activemq.ra.ActiveMQManagedConnectionFactory",enabled="true",jndi-name="java:/AMQConnectionFactory",max-pool-size="10",min-pool-size="1",no-recovery="false",pool-prefill="false",recovery-password="${activemq.password}",recovery-plugin-class-name="org.jboss.jca.core.recovery.ConfigurableRecoveryPlugin",recovery-plugin-properties={"EnableIsValid" => "false","IsValidOverride" => "true","EnableClose" => "true"},recovery-username="${activemq.user}",same-rm-override="false",use-ccm="true",use-java-context="true")

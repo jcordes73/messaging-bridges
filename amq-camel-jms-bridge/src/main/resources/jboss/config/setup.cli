@@ -1,0 +1,28 @@
+/subsystem="messaging"/hornetq-server="default":write-attribute(name=message-counter-enabled, value=true)
+/subsystem="messaging"/hornetq-server="default":write-attribute(name=security-enabled, value=true)
+/subsystem="messaging"/hornetq-server="default":write-attribute(name=cluster-user, value="${hornetq.user}")
+/subsystem="messaging"/hornetq-server="default":write-attribute(name=cluster-password, value="${hornetq.password}")
+if (outcome == success) of /subsystem="messaging"/hornetq-server="default"/connection-factory="RemoteXAConnectionFactory":read-resource()
+  /subsystem="messaging"/hornetq-server="default"/connection-factory="RemoteXAConnectionFactory":remove()
+end-if
+/subsystem="messaging"/hornetq-server="default"/connection-factory="RemoteXAConnectionFactory":add(connector={"netty" => undefined},entries=["java:jboss/exported/jms/RemoteXAConnectionFactory"],factory-type="XA_GENERIC")
+if (outcome == success) of /subsystem="messaging"/hornetq-server="default"/jms-queue="queueB":read-resource()
+  /subsystem="messaging"/hornetq-server="default"/jms-queue="queueB":remove()
+end-if
+/subsystem="messaging"/hornetq-server="default"/jms-queue="queueB":add(entries=["java:/queue/queueB","java:jboss/exported/jms/queue/queueB"])
+if (outcome== success ) of /subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor":read-resource()
+  /subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor":remove()
+end-if
+/subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor":add(socket-binding="messaging")
+/subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor"/param="ssl-enabled":add(value="true")
+/subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor"/param="key-store-path":add(value="${jboss.server.config.dir}/broker.ks")
+/subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor"/param="key-store-password":add(value="redhat")
+/subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor"/param="trust-store-path":add(value="${jboss.server.config.dir}/broker.ts")
+/subsystem="messaging"/hornetq-server="default"/remote-acceptor="netty-ssl-acceptor"/param="trust-store-password":add(value="redhat")
+if (outcome== success ) of /subsystem="messaging"/hornetq-server="default"/remote-connector="netty":read-resource()
+  /subsystem="messaging"/hornetq-server="default"/remote-connector="netty":remove()
+end-if
+/subsystem="messaging"/hornetq-server="default"/remote-connector="netty":add(socket-binding="messaging")
+/subsystem="messaging"/hornetq-server="default"/remote-connector="netty"/param="ssl-enabled":add(value="true")
+/subsystem="messaging"/hornetq-server="default"/remote-connector="netty"/param="key-store-path":add(value="${jboss.server.config.dir}/broker.ks")
+/subsystem="messaging"/hornetq-server="default"/remote-connector="netty"/param="key-store-password":add(value="redhat")

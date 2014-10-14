@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+  <camelContext xmlns="http://camel.apache.org/schema/spring" trace="true">
+    <route id="activemq-hornetq">
+      <from uri="activemq:queue:queueA"/>
+      <transacted/>
+      <to uri="hornetq:queue:queueB"/>
+    </route>
+
+    <route id="hornetq-activemq">
+      <from uri="hornetq:queue:queueB"/>
+      <transacted/>
+      <to uri="activemq:queue:queueC"/>
+    </route>
+  </camelContext>
+
+  <bean id="jmsTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+    <property name="transactionManagerName" value="java:/TransactionManager"/>
+  </bean>
+
+  <bean id="hornetqJmsConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName" value="java:/JmsXA"/>
+    <property name="lookupOnStartup" value="false"/>
+    <property name="cache" value="true"/>
+    <property name="proxyInterface" value="javax.jms.ConnectionFactory"/>
+  </bean>
+
+  <bean id="hornetq" class="org.apache.camel.component.jms.JmsComponent">
+    <property name="connectionFactory" ref="hornetqJmsConnectionFactory"/>
+    <property name="transactionManager" ref="jmsTransactionManager"/>
+  </bean>
+
+  <bean id="amqJmsConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName" value="java:/AMQConnectionFactory"/>
+  </bean>
+
+  <bean id="activemq" class="org.apache.camel.component.jms.JmsComponent">
+    <property name="connectionFactory" ref="amqJmsConnectionFactory"/>
+    <property name="transactionManager" ref="jmsTransactionManager"/>
+    <property name="cacheLevelName" value="CACHE_NONE"/>
+    <property name="acknowledgementModeName" value="SESSION_TRANSACTED"/>
+  </bean>
+
+  <!--
+  <bean id="wmqJmsConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName" value="java:jboss/eis/MQCF"/>
+    <property name="lookupOnStartup" value="false"/>
+    <property name="cache" value="true"/>
+    <property name="proxyInterface" value="javax.jms.ConnectionFactory"/>
+  </bean>
+
+  <bean id="wmq" class="org.apache.camel.component.jms.JmsComponent">
+    <property name="connectionFactory" ref="wmqJmsConnectionFactory"/>
+    <property name="transactionManager" ref="jmsTransactionManager"/>
+  </bean>
+  -->
+</beans>
