@@ -6,15 +6,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
   <camelContext xmlns="http://camel.apache.org/schema/spring" trace="true">
     <route id="activemq-hornetq">
-      <from uri="activemq:queue:queueA"/>
+      <from uri="activemqxa:queue:queueA"/>
       <transacted/>
-      <to uri="hornetq:queue:queueB"/>
+      <to uri="hornetqxa:queue:queueB"/>
     </route>
 
     <route id="hornetq-activemq">
-      <from uri="hornetq:queue:queueB"/>
+      <from uri="hornetqxa:queue:queueB"/>
       <transacted/>
-      <to uri="activemq:queue:queueC"/>
+      <to uri="activemqxa:queue:queueC"/>
     </route>
   </camelContext>
 
@@ -22,15 +22,15 @@
     <property name="transactionManagerName" value="java:/TransactionManager"/>
   </bean>
 
-  <bean id="hornetqJmsConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+  <bean id="hornetqJmsXAConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
     <property name="jndiName" value="java:/JmsXA"/>
     <property name="lookupOnStartup" value="false"/>
     <property name="cache" value="true"/>
     <property name="proxyInterface" value="javax.jms.ConnectionFactory"/>
   </bean>
 
-  <bean id="hornetq" class="org.apache.camel.component.jms.JmsComponent">
-    <property name="connectionFactory" ref="hornetqJmsConnectionFactory"/>
+  <bean id="hornetqxa" class="org.apache.camel.component.jms.JmsComponent">
+    <property name="connectionFactory" ref="hornetqJmsXAConnectionFactory"/>
     <property name="transactionManager" ref="jmsTransactionManager"/>
   </bean>
 
@@ -38,7 +38,7 @@
     <property name="jndiName" value="java:/AMQConnectionFactory"/>
   </bean>
 
-  <bean id="activemq" class="org.apache.camel.component.jms.JmsComponent">
+  <bean id="activemqxa" class="org.apache.camel.component.jms.JmsComponent">
     <property name="connectionFactory" ref="amqJmsConnectionFactory"/>
     <property name="transactionManager" ref="jmsTransactionManager"/>
     <property name="cacheLevelName" value="CACHE_NONE"/>
