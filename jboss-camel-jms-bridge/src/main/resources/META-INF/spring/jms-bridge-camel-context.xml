@@ -45,17 +45,4 @@
     <property name="acknowledgementModeName" value="SESSION_TRANSACTED"/>
   </bean>
 
-  <!--
-  <bean id="wmqJmsConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
-    <property name="jndiName" value="java:jboss/eis/MQCF"/>
-    <property name="lookupOnStartup" value="false"/>
-    <property name="cache" value="true"/>
-    <property name="proxyInterface" value="javax.jms.ConnectionFactory"/>
-  </bean>
-
-  <bean id="wmq" class="org.apache.camel.component.jms.JmsComponent">
-    <property name="connectionFactory" ref="wmqJmsConnectionFactory"/>
-    <property name="transactionManager" ref="jmsTransactionManager"/>
-  </bean>
-  -->
 </beans>

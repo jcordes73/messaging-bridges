@@ -1,8 +1,7 @@
 <jboss-deployment-structure>
 	<deployment>
 		<dependencies>
-			<!-- <module name="deployment.wmq.jmsra.rar" export="true" /> -->
-			<module name="deployment.activemq-rar-5.9.0.redhat-610379.rar" export="true" />
+                        <module name="org.springframework.aop"/>
 			<module name="org.apache.log4j" export="true"/>
 		</dependencies>
 	</deployment>

@@ -1,7 +1,7 @@
 Building / installing the bridge
 =========================
 This is a messaging bridge for HornetQ-ActiveMQ running on JBoss Fuse / A-MQ and features the following:
-* JBoss Fuse / A-MQ 6.1
+* JBoss Fuse / A-MQ 6.2.1
 * JBoss EAP 6.x (at least 6.1.1 required)
 * ActiveMQ on JBoss Fuse / A-MQ
 * HornetQ on JBoss EAP 6
@@ -19,12 +19,12 @@ mvn clean install
 ```
 * To install the features into the local Maven repository execute
 ```bash
-mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=src/main/resources/amq/features/amq-camel-jms-bridge-1.0.0-features.xml -DgroupId=com.redhat -DartifactId=amq-camel-jms-bridge -Dversion=1.0.0 -Dpackaging=xml -Dclassifier=features
+mvn org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file -Dfile=src/main/resources/amq/features/amq-camel-jms-bridge-2.0.0-features.xml -DgroupId=com.redhat -DartifactId=amq-camel-jms-bridge -Dversion=2.0.0 -Dpackaging=xml -Dclassifier=features
 ```
 Configuration
 ------------------
 
-* Create keystore/truststore (https://access.redhat.com/documentation/en-US/Red_Hat_JBoss_A-MQ/6.1/html-single/Security_Guide/index.html#SSL-JavaKeystores)
+* Create keystore/truststore (https://access.redhat.com/documentation/en-US/Red_Hat_JBoss_A-MQ/6.2/html-single/Security_Guide/index.html#SSL-JavaKeystores)
 ```bash
 keytool -keystore broker.ks -genkey -alias broker  
 Enter keystore password:  
@@ -71,7 +71,7 @@ Trust this certificate? [no]:  yes
 ```bash
 keytool -importkeystore -srckeystore /usr/lib/jvm/jre/lib/security/cacerts -destkeystore broker.ts
 ```
-* Configure trust-store and key-store for the Openwire/SSL Protocol (https://access.redhat.com/documentation/en-US/Red_Hat_JBoss_A-MQ/6.1/html-single/Security_Guide/index.html#SSL-SetSecurityContext) in AMQ_HOME/etc/activemq.xml
+* Configure trust-store and key-store for the Openwire/SSL Protocol (https://access.redhat.com/documentation/en-US/Red_Hat_JBoss_A-MQ/6.2/html-single/Security_Guide/index.html#SSL-SetSecurityContext) in AMQ_HOME/etc/activemq.xml
 ```xml
 <sslContext>  
   <sslContext keyStore="file:${karaf.home}/etc/broker.ks" keyStorePassword="redhat" trustStore="file:${karaf.home}/etc/broker.ts" trustStorePassword="redhat"/>  
@@ -84,9 +84,9 @@ keytool -importkeystore -srckeystore /usr/lib/jvm/jre/lib/security/cacerts -dest
 * Copy **src/main/resources/amq/config/etc/com.redhat.amq.camel.jms.bridge.cfg** to **AMQ_HOME/etc** and modify it
 * On the Karaf shell use the following commands to add, refresh or remove the feature file
 ```bash
-features:addurl mvn:com.redhat/amq-camel-jms-bridge/1.0.0/xml/features
-features:refreshurl mvn:com.redhat/amq-camel-jms-bridge/1.0.0/xml/features
-features:removeurl mvn:com.redhat/amq-camel-jms-bridge/1.0.0/xml/features
+features:addurl mvn:com.redhat/amq-camel-jms-bridge/2.0.0/xml/features
+features:refreshurl mvn:com.redhat/amq-camel-jms-bridge/2.0.0/xml/features
+features:removeurl mvn:com.redhat/amq-camel-jms-bridge/2.0.0/xml/features
 ```
 * Install the bridge via
 ```bash

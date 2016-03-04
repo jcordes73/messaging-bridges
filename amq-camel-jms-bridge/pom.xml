@@ -1,119 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-                                                                <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.redhat</groupId>
+  <parent>
+    <groupId>com.redhat</groupId>
+    <artifactId>camel-jms-bridges</artifactId>
+    <version>2.0.0</version>
+  </parent>
+
   <artifactId>amq-camel-jms-bridge</artifactId>
   <packaging>bundle</packaging>
-  <version>1.0.0</version>
 
   <name>ActiveMQ-HornetQ Bridge on JBoss Fuse / A-MQ</name>
   <url>http://www.redhat.com</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <camel.version>2.10.0.redhat-60024</camel.version>
-    <activemq.version>5.8.0.redhat-60024</activemq.version>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>release.fusesource.org</id>
-      <name>FuseSource Release Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-    <repository>
-     <id>ea.fusesource.org</id>
-     <name>FuseSource Community Early Access Release Repository</name>
-     <url>http://repo.fusesource.com/nexus/content/groups/ea</url>
-     <snapshots>
-      <enabled>false</enabled>
-     </snapshots>
-     <releases>
-      <enabled>true</enabled>
-     </releases>
-    </repository>    
-    <repository>
-      <id>snapshot.fusesource.org</id>
-      <name>FuseSource Snapshot Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>release.fusesource.org</id>
-      <name>FuseSource Release Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </pluginRepository>
-    <pluginRepository>
-     <id>ea.fusesource.org</id>
-     <name>FuseSource Community Early Access Release Repository</name>
-     <url>http://repo.fusesource.com/nexus/content/groups/ea</url>
-     <snapshots>
-      <enabled>false</enabled>
-     </snapshots>
-     <releases>
-      <enabled>true</enabled>
-     </releases>
-    </pluginRepository>      
-    <pluginRepository>
-      <id>snapshot.fusesource.org</id>
-      <name>FuseSource Snapshot Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-core</artifactId>
-      <version>${camel.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-jms</artifactId>
-      <version>${camel.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-camel</artifactId>
-      <version>${activemq.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-blueprint</artifactId>
-      <version>${camel.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -121,25 +42,21 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <version>1.7.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
       <scope>provided</scope>
     </dependency>
 
@@ -147,133 +64,112 @@
     <dependency>
       <groupId>org.jboss.logmanager</groupId>
       <artifactId>jboss-logmanager</artifactId>
-      <version>1.5.2.Final-redhat-1</version>
     </dependency>
 
     <!-- JBoss Modules -->
     <dependency>
       <groupId>org.jboss.modules</groupId>
       <artifactId>jboss-modules</artifactId>
-      <version>1.3.4.Final-redhat-1</version>
     </dependency>
 
     <!-- JBoss Remoting -->
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-ejb-client</artifactId>
-      <version>1.0.26.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-remote-naming</artifactId>
-      <version>1.0.9.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>3.1.4.GA-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.marshalling</groupId>
       <artifactId>jboss-marshalling</artifactId>
-      <version>1.4.8.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.marshalling</groupId>
       <artifactId>jboss-marshalling-river</artifactId>
-      <version>1.4.8.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.remoting3</groupId>
       <artifactId>jboss-remoting</artifactId>
-      <version>3.3.3.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.sasl</groupId>
       <artifactId>jboss-sasl</artifactId>
-      <version>1.0.4.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
       <artifactId>jboss-transaction-api_1.1_spec</artifactId>
-      <version>1.0.1.Final-redhat-2</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <version>1.0.2.Final-redhat-2</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.xnio</groupId>
       <artifactId>xnio-api</artifactId>
-      <version>3.0.10.GA-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.xnio</groupId>
       <artifactId>xnio-nio</artifactId>
-      <version>3.0.10.GA-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>
       <artifactId>jboss-jms-api_1.1_spec</artifactId>
-      <version>1.0.1.Final-redhat-2</version>
     </dependency>
 
     <!-- HornetQ -->
     <dependency>
       <groupId>org.hornetq</groupId>
       <artifactId>hornetq-jms-client</artifactId>
-      <version>2.3.21.Final-redhat-1</version>
     </dependency>
    
     <dependency>
       <groupId>org.hornetq</groupId>
       <artifactId>hornetq-core-client</artifactId>
-      <version>2.3.21.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.hornetq</groupId>
       <artifactId>hornetq-commons</artifactId>
-      <version>2.3.21.Final-redhat-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.hornetq</groupId>
       <artifactId>hornetq-journal</artifactId>
-      <version>2.3.21.Final-redhat-1</version>
     </dependency>
      
     <!-- JGroups -->
     <dependency>
       <groupId>org.jgroups</groupId>
       <artifactId>jgroups</artifactId>
-      <version>3.2.13.Final</version>
     </dependency>
 
     <!-- Netty -->
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty</artifactId>
-      <version>3.6.9.Final</version>
     </dependency>
 
     <!-- Google Protobuf -->
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>2.5.0</version>
     </dependency>
 
     <!-- testing -->
@@ -337,7 +233,7 @@
       <plugin>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-maven-plugin</artifactId>
-        <version>2.12.0.redhat-610379</version>
+        <version>${camel.version}</version>
         <configuration>
           <useBlueprint>true</useBlueprint>
         </configuration>
